@@ -1,0 +1,625 @@
+/* ==========================================================================
+   LIFE RPG RETRO ARCADE DASHBOARD - STYLE SHEET
+   ========================================================================== */
+
+/* 1. Global Reset & Typography */
+* {
+  box-sizing: border-box;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+}
+
+:root {
+  --bg-dark: #12121e;
+  --bg-card: #1d1e2c;
+  --color-int: #209cee;
+  --color-int-dark: #0066aa;
+  --color-str: #e76e55;
+  --color-str-dark: #aa2200;
+  --color-disc: #92cc41;
+  --color-disc-dark: #4b8b00;
+  --color-gold: #f7d51d;
+  --color-xp: #92cc41;
+  --crt-scanline-color: rgba(18, 16, 16, 0.25);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(circle at 50% 20%, #201a3c 0%, #0d0b18 80%);
+  color: #ffffff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* 2. CRT Scanline & Retro TV Effects */
+body.crt-enabled::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(
+    var(--crt-scanline-color) 50%, 
+    rgba(0, 0, 0, 0.4) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  z-index: 9990;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+.crt-overlay {
+  display: none;
+}
+
+body.crt-enabled .crt-overlay {
+  display: block;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+  pointer-events: none;
+  z-index: 9991;
+}
+
+body.crt-enabled .crt-flicker {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(18, 16, 16, 0.02);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9992;
+  animation: crtFlicker 0.15s infinite;
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.01; }
+  50% { opacity: 0.04; }
+  100% { opacity: 0.02; }
+}
+
+/* 3. Layout Wrapper */
+.app-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 3rem 1.5rem;
+}
+
+/* 4. Top Control Bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 4px dashed #33334d;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  color: var(--color-gold);
+  text-shadow: 2px 2px #000;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-sm {
+  font-size: 0.65rem !important;
+  padding: 6px 10px !important;
+}
+
+.btn-xs {
+  font-size: 0.55rem !important;
+  padding: 4px 8px !important;
+}
+
+/* 5. Hero Stats Header */
+.hero-stats-container {
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 0 #000000;
+  border-image-repeat: stretch !important;
+}
+
+.hero-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .hero-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatar-box {
+  background: #212529;
+  border: 4px solid #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-name {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.level-tag {
+  font-size: 0.75rem;
+}
+
+.meta-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stat-box {
+  background: #212529;
+  border: 3px solid #4a4a6a;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.gold-box {
+  border-color: var(--color-gold);
+}
+
+.streak-box {
+  border-color: #ff7700;
+}
+
+.stat-label {
+  color: #aaa;
+}
+
+.stat-value {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* XP Progress Bar Styling */
+.xp-progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.xp-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: #e7e7e7;
+}
+
+.progress-bar-wrapper {
+  position: relative;
+}
+
+.nes-progress {
+  height: 28px !important;
+}
+
+.nes-progress::-webkit-progress-value {
+  background-color: var(--color-xp) !important;
+  transition: width 0.4s ease-in-out;
+}
+
+/* 6. Dashboard Main Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 950px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 7. Quest Form */
+.quest-form-container {
+  background-color: #212529 !important;
+  height: fit-content;
+}
+
+.quest-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.65rem;
+  color: #f7d51d;
+}
+
+.difficulty-buttons-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.difficulty-btn {
+  padding: 8px 4px !important;
+  font-size: 0.55rem !important;
+  text-align: center;
+  line-height: 1.4;
+  opacity: 0.65;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+.difficulty-btn.selected {
+  opacity: 1 !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+.reward-preview-box {
+  background: #15181c;
+  padding: 10px;
+  border: 2px dashed #4a4a6a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.6rem;
+}
+
+.preview-title {
+  color: #aaa;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  font-size: 0.75rem !important;
+}
+
+/* 8. Active Quests Section */
+.active-quests-container {
+  background-color: #212529 !important;
+  min-height: 480px;
+}
+
+.quest-list-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #3d414d;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.filter-btn {
+  opacity: 0.7;
+}
+
+.filter-btn.active {
+  opacity: 1 !important;
+  box-shadow: inset -2px -2px #000;
+}
+
+.filter-btn.filter-int {
+  background-color: var(--color-int) !important;
+  color: #fff !important;
+}
+
+.filter-btn.filter-str {
+  background-color: var(--color-str) !important;
+  color: #fff !important;
+}
+
+.filter-btn.filter-disc {
+  background-color: var(--color-disc) !important;
+  color: #000 !important;
+}
+
+.quest-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+/* 9. Quest Card Component */
+.quest-card {
+  position: relative;
+  background-color: #191b24;
+  border: 4px solid #fff;
+  padding: 1.25rem;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.quest-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 255, 255, 0.2);
+  border-color: var(--color-gold);
+}
+
+.quest-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 0.75rem;
+}
+
+.quest-card-title {
+  font-size: 0.85rem;
+  margin: 0;
+  color: #ffffff;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Dynamic Attribute Badges */
+.badge-attr {
+  font-size: 0.6rem !important;
+  padding: 4px 8px !important;
+  border-radius: 0;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.badge-attr.attr-int {
+  background-color: var(--color-int);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(32, 156, 238, 0.5);
+}
+
+.badge-attr.attr-str {
+  background-color: var(--color-str);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(231, 110, 85, 0.5);
+}
+
+.badge-attr.attr-disc {
+  background-color: var(--color-disc);
+  color: #111111;
+  box-shadow: 0 0 8px rgba(146, 204, 65, 0.5);
+}
+
+.quest-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 2px dashed #343746;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.quest-rewards {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.65rem;
+}
+
+.reward-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.reward-xp {
+  color: var(--color-xp);
+}
+
+.reward-gold {
+  color: var(--color-gold);
+}
+
+.complete-btn {
+  font-size: 0.65rem !important;
+}
+
+/* 10. Completed Card Animation State */
+.quest-card.completing {
+  animation: questCompletePop 0.6s forwards ease-out;
+}
+
+@keyframes questCompletePop {
+  0% {
+    transform: scale(1);
+    border-color: var(--color-gold);
+  }
+  50% {
+    transform: scale(1.08);
+    background-color: #3b3711;
+    box-shadow: 0 0 25px var(--color-gold);
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+}
+
+/* 11. Toast Notifications & Floating Text */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.retro-toast {
+  background-color: #212529;
+  border: 4px solid #fff;
+  padding: 12px 18px;
+  font-size: 0.65rem;
+  color: #fff;
+  box-shadow: 0 6px 0 #000;
+  animation: toastSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.retro-toast.toast-success {
+  border-color: var(--color-disc);
+  color: var(--color-disc);
+}
+
+.retro-toast.toast-info {
+  border-color: var(--color-int);
+  color: var(--color-int);
+}
+
+.retro-toast.toast-gold {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 12. Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.empty-state.hidden {
+  display: none;
+}
+
+.empty-state p {
+  font-size: 0.8rem;
+  color: var(--color-gold);
+  margin: 0;
+}
+
+/* 13. Footer */
+.footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.55rem;
+  color: #666688;
+}
+
+/* Animations */
+.animate-bounce {
+  animation: octoBounce 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes octoBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-4px); }
+}
+
+/* 14. Shop Section Styling */
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 850px) {
+  .shop-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shop-category-title {
+  font-size: 0.8rem;
+  margin-bottom: 1.25rem;
+}
+
+.shop-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.shop-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem !important;
+  background-color: #191b24 !important;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.shop-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-gold);
+}
+
+.shop-item-name {
+  font-size: 0.75rem;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+}
+
+.shop-item-cost {
+  font-size: 0.65rem;
+}
+
+.buy-reward-btn,
+.buy-title-btn {
+  font-size: 0.6rem !important;
+  padding: 8px 12px !important;
+}
+

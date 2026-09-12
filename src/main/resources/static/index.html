@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life RPG - Retro Arcade Dashboard</title>
+  <meta name="description" content="Level up your life with this 8-bit retro arcade Quest & Habit tracker." />
+
+  <!-- NES.css and Google Font 'Press Start 2P' -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body class="crt-enabled">
+  <!-- CRT Scanline & Glare Overlay -->
+  <div class="crt-overlay" id="crtOverlay"></div>
+  <div class="crt-flicker"></div>
+
+  <!-- Notification Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <div id="app" class="app-wrapper">
+    <!-- Top Control Bar / Header Utilities -->
+    <header class="top-bar">
+      <div class="brand-title">
+        <i class="nes-icon trophy is-medium"></i>
+        <span>LIFE RPG ARCADE</span>
+      </div>
+
+      <div class="top-actions">
+        <!-- API Connection Indicator / Mode Switch -->
+        <div id="apiStatusBadge" class="nes-badge">
+          <span class="is-warning" id="apiStatusText">CONNECTING...</span>
+        </div>
+
+        <button id="toggleCrtBtn" type="button" class="nes-btn is-primary btn-sm" title="Toggle CRT Effects">
+          📺 CRT: ON
+        </button>
+
+        <button id="toggleSoundBtn" type="button" class="nes-btn is-success btn-sm" title="Toggle Sound FX">
+          🔊 SFX: ON
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+
+      <!-- Hero Stats Header Container -->
+      <section class="nes-container is-dark with-title hero-stats-container">
+        <p class="title">PLAYER HERO STATS</p>
+        
+        <div class="hero-stats-grid">
+          <!-- Avatar & Profile Info -->
+          <div class="profile-info">
+            <div class="avatar-box">
+              <i class="nes-octocat animate-bounce"></i>
+            </div>
+            <div class="user-details">
+              <h2 id="heroUsername" class="hero-name">LOADING...</h2>
+              <div class="level-tag" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="nes-text is-warning">LEVEL <span id="heroLevel">1</span> HERO</span>
+                <span id="heroTitleBadge" class="nes-badge" style="display: inline-block;">
+                  <span class="is-primary" id="heroTitleText">NO TITLE</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Currency & Streak Stats -->
+          <div class="meta-stats">
+            <div class="stat-box gold-box">
+              <span class="stat-label">GOLD</span>
+              <span class="stat-value">🪙 <span id="heroGold">0</span></span>
+            </div>
+            <div class="stat-box streak-box">
+              <span class="stat-label">STREAK</span>
+              <span class="stat-value">🔥 <span id="heroStreak">0</span> DAYS</span>
+            </div>
+          </div>
+
+          <!-- XP Progress Bar -->
+          <div class="xp-progress-section">
+            <div class="xp-label-row">
+              <span class="xp-text">XP PROGRESS</span>
+              <span id="xpNumericText" class="xp-numeric">0 / 100 XP</span>
+            </div>
+            <div class="progress-bar-wrapper">
+              <progress id="heroXpBar" class="nes-progress is-primary" value="0" max="100"></progress>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Interactive Dashboard Grid: Left Form, Right Quests -->
+      <div class="dashboard-grid">
+        
+        <!-- Left Panel: Quest Form -->
+        <section class="nes-container with-title quest-form-container">
+          <p class="title">NEW QUEST RECRUITMENT</p>
+
+          <form id="questForm" class="quest-form">
+            
+            <!-- Quest Title -->
+            <div class="nes-field form-group">
+              <label for="questTitleInput" class="form-label">QUEST TITLE</label>
+              <input type="text" id="questTitleInput" class="nes-input" placeholder="e.g. Slay 5 LeetCode Bugs" required maxLength="40" />
+            </div>
+
+            <!-- Attribute Selector -->
+            <div class="form-group">
+              <label for="attributeSelect" class="form-label">ATTRIBUTE CLASS</label>
+              <div class="nes-select">
+                <select id="attributeSelect" required>
+                  <option value="INT" selected>🧠 INT (Intelligence)</option>
+                  <option value="STR">⚔️ STR (Strength)</option>
+                  <option value="DISC">🛡️ DISC (Discipline)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Difficulty Buttons Selector -->
+            <div class="form-group">
+              <label class="form-label">DIFFICULTY & XP REWARD</label>
+              <div class="difficulty-buttons-group" id="difficultyGroup">
+                <button type="button" class="nes-btn difficulty-btn is-success selected" data-diff="EASY" data-xp="10" data-gold="5">
+                  EASY <br><small>10 XP</small>
+                </button>
+                <button type="button" class="nes-btn difficulty-btn is-warning" data-diff="MEDIUM" data-xp="25" data-gold="15">
+                  MEDIUM <br><small>25 XP</small>
+                </button>
+                <button type="button" class="nes-btn difficulty-btn is-error" data-diff="HARD" data-xp="60" data-gold="35">
+                  HARD <br><small>60 XP</small>
+                </button>
+              </div>
+            </div>
+
+            <!-- Reward Preview Badge -->
+            <div class="reward-preview-box">
+              <span class="preview-title">REWARD:</span>
+              <span id="previewXpBadge" class="nes-badge">
+                <span class="is-primary">+10 XP</span>
+              </span>
+              <span id="previewGoldBadge" class="nes-badge">
+                <span class="is-warning">+5 🪙</span>
+              </span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="addQuestBtn" class="nes-btn is-primary submit-btn">
+              ➕ ADD QUEST
+            </button>
+          </form>
+        </section>
+
+        <!-- Right Panel: Active Quests List -->
+        <section class="nes-container with-title active-quests-container">
+          <p class="title">ACTIVE QUEST LOG</p>
+
+          <!-- Filter & Search Bar -->
+          <div class="quest-list-controls">
+            <div class="filter-buttons">
+              <button type="button" class="nes-btn btn-xs filter-btn active" data-filter="ALL">ALL</button>
+              <button type="button" class="nes-btn btn-xs filter-btn filter-int" data-filter="INT">INT</button>
+              <button type="button" class="nes-btn btn-xs filter-btn filter-str" data-filter="STR">STR</button>
+              <button type="button" class="nes-btn btn-xs filter-btn filter-disc" data-filter="DISC">DISC</button>
+            </div>
+            
+            <div class="quest-count">
+              <span id="questCountBadge" class="nes-text is-disabled">0 Quests</span>
+            </div>
+          </div>
+
+          <!-- Quest Cards Container -->
+          <div id="questList" class="quest-cards-grid">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Empty State -->
+          <div id="emptyQuestState" class="empty-state hidden">
+            <i class="nes-ash is-medium"></i>
+            <p>NO ACTIVE QUESTS LOGGED!</p>
+            <small class="nes-text is-disabled">Recruit a new quest on the left to start leveling up.</small>
+          </div>
+        </section>
+      </div>
+
+      <!-- Shop Section: Real-Life Rewards & Cosmetic Titles -->
+      <section class="nes-container with-title shop-container" style="margin-top: 2rem; background-color: #212529;">
+        <p class="title">REWARD SHOP &amp; COSMETIC BAZAAR</p>
+
+        <div class="shop-grid">
+          <!-- Real-Life Rewards Category -->
+          <div class="shop-category">
+            <h3 class="shop-category-title nes-text is-warning">🎁 REAL-LIFE REWARDS</h3>
+            <div class="shop-cards">
+              
+              <div class="shop-card nes-container is-rounded is-dark">
+                <div class="shop-card-info">
+                  <h4 class="shop-item-name">🎬 Movie Night</h4>
+                  <span class="shop-item-cost nes-text is-warning">🪙 100 Gold</span>
+                </div>
+                <button type="button" class="nes-btn is-success buy-reward-btn" data-cost="100">
+                  BUY REWARD
+                </button>
+              </div>
+
+              <div class="shop-card nes-container is-rounded is-dark">
+                <div class="shop-card-info">
+                  <h4 class="shop-item-name">🎮 Game Session / 1 hr Gaming</h4>
+                  <span class="shop-item-cost nes-text is-warning">🪙 150 Gold</span>
+                </div>
+                <button type="button" class="nes-btn is-success buy-reward-btn" data-cost="150">
+                  BUY REWARD
+                </button>
+              </div>
+
+              <div class="shop-card nes-container is-rounded is-dark">
+                <div class="shop-card-info">
+                  <h4 class="shop-item-name">🍿 Cheat Snack / Treat</h4>
+                  <span class="shop-item-cost nes-text is-warning">🪙 50 Gold</span>
+                </div>
+                <button type="button" class="nes-btn is-success buy-reward-btn" data-cost="50">
+                  BUY REWARD
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Cosmetic RPG Titles Category -->
+          <div class="shop-category">
+            <h3 class="shop-category-title nes-text is-primary">👑 COSMETIC RPG TITLES</h3>
+            <div class="shop-cards">
+
+              <div class="shop-card nes-container is-rounded is-dark">
+                <div class="shop-card-info">
+                  <h4 class="shop-item-name">🗡️ SLAYER TITLE</h4>
+                  <span class="shop-item-cost nes-text is-warning">🪙 200 Gold</span>
+                </div>
+                <button type="button" class="nes-btn is-primary buy-title-btn" data-title="SLAYER" data-cost="200">
+                  BUY TITLE
+                </button>
+              </div>
+
+              <div class="shop-card nes-container is-rounded is-dark">
+                <div class="shop-card-info">
+                  <h4 class="shop-item-name">👑 LEGEND TITLE</h4>
+                  <span class="shop-item-cost nes-text is-warning">🪙 500 Gold</span>
+                </div>
+                <button type="button" class="nes-btn is-primary buy-title-btn" data-title="LEGEND" data-cost="500">
+                  BUY TITLE
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>LIFE RPG &copy; 2026 | Built with NES.css &amp; Spring Boot API | Press Start 2P</p>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
