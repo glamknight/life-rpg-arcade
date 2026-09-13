@@ -57,11 +57,4 @@ docker run -p 8080:8080 liferpg-arcade
 
 ───
 
-Step 2: Push the README.md to GitHub
 
-In your VS Code terminal (PS ...\LifeRpgArcade\demo>), run:
-
-bash
-git add README.md
-git commit -m "Add project documentation and setup details in README"
-git push origin main
