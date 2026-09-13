@@ -6,7 +6,7 @@ Life RPG Arcade is a web application that transforms daily task management and h
 
 🚀 Live Demo
 
-• Web Service URL:https://life-rpg-arcade.onrender.com(Replace with your exact Render link)
+• Web Service URL:https://life-rpg-arcade.onrender.com
 • Deployment Platform: Render
 
 ───
@@ -40,7 +40,7 @@ demo/
 • ​Maven 3.8+
 • ​Docker Desktop (optional, for containerized local execution)
 ​Option 1: Run via Maven
-git clone https://github.com/YOUR_GITHUB_USERNAME/life-rpg-arcade.git
+git clone https://github.com/glamknight/life-rpg-arcade.git
 cd life-rpg-arcade/demo
 mvn spring-boot:run
 
